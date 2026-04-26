@@ -1,4 +1,5 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const fs = require('fs/promises')
 const path = require('path')
 const {
@@ -26,6 +27,55 @@ const {
 
 const isDev = !app.isPackaged
 const devServerUrl = 'http://localhost:5173'
+
+function setupAutoUpdates() {
+  if (isDev) {
+    return
+  }
+
+  autoUpdater.autoDownload = true
+  autoUpdater.autoInstallOnAppQuit = true
+
+  autoUpdater.on('error', (error) => {
+    console.error('Auto-update failed', error)
+  })
+
+  autoUpdater.on('update-available', (info) => {
+    console.info(`Update available: ${info.version}`)
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    console.info('No update available')
+  })
+
+  autoUpdater.on('download-progress', (progress) => {
+    console.info(`Update download progress: ${Math.round(progress.percent)}%`)
+  })
+
+  autoUpdater.on('update-downloaded', async (info) => {
+    const windows = BrowserWindow.getAllWindows()
+    const parentWindow = windows.length > 0 ? windows[0] : null
+    const { response } = await dialog.showMessageBox(parentWindow, {
+      type: 'info',
+      buttons: ['Restart now', 'Later'],
+      defaultId: 0,
+      cancelId: 1,
+      title: 'Update ready',
+      message: `Version ${info.version} has been downloaded.`,
+      detail: 'Restart the application to install the update.',
+    })
+
+    if (response === 0) {
+      autoUpdater.quitAndInstall()
+    }
+  })
+
+  app.whenReady().then(() => {
+    autoUpdater.checkForUpdatesAndNotify().catch((error) => {
+      console.error('Unable to check for updates', error)
+    })
+  })
+}
 
 async function loadRenderer(window) {
   if (!isDev) {
@@ -138,6 +188,8 @@ function createWindow() {
     win.destroy()
   })
 }
+
+setupAutoUpdates()
 
 app
   .whenReady()
