@@ -1,6 +1,6 @@
 {
   "name": "inventaire-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Application de bureau de gestion d'inventaire pour suivre les articles, les entrées, les sorties et les rapports.",
   "author": "Oussama Itou",
   "private": true,
