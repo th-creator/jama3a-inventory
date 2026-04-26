@@ -158,10 +158,6 @@ function Login({ onLoginSuccess }) {
               )}
             </form.Subscribe>
 
-            <p className="text-center text-sm text-muted-foreground">
-              Identifiants par défaut : <span className="font-medium">admin</span> /{' '}
-              <span className="font-medium">admin123</span>
-            </p>
           </form>
         </CardContent>
       </Card>
