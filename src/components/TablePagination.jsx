@@ -16,7 +16,7 @@ function TablePagination({ page, pageCount, totalItems, pageSize, onPageChange }
 
       <div className="flex items-center gap-2">
         <Button type="button" variant="outline" size="sm" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
-          Précédent
+          Précédent 
         </Button>
         <span className="min-w-24 text-center text-sm text-muted-foreground">
           Page {page} sur {pageCount}
